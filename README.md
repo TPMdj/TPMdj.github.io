@@ -1,2 +1,2 @@
-# TPMdj.github.io
+# http://TPMdj.github.io
 Te Pūnaha Matatini data visualisations
