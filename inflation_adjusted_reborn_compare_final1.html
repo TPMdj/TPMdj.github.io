@@ -87,8 +87,8 @@
 		];
 		
 		var margin = {top: 50, right: 50, bottom: 70, left: 60};
-		var width = 685 - margin.left - margin.right;
-		var height = 380 - margin.top - margin.bottom;
+		var width = 850 - margin.left - margin.right; //900 or 685 or 850
+		var height = 472 - margin.top - margin.bottom; //500 or 380 or 472
 		
 		var xScale = d3.scale.ordinal() //could add domain now or later
 					.domain(dataArray.map (function(d) { return d[0];}))
