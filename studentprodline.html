@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style> /* set the CSS */
+
+body { font: 12px Arial;}
+
+#FTEline { 
+    stroke: rgb(136,173,8);
+    stroke-width: 5;
+    fill: none;
+}
+
+#FTEline:hover {
+	stroke: rgb(183, 205, 57);
+	stroke-width: 8;
+}
+
+#Prodline{
+	stroke: rgb(113, 1, 147);
+	stroke-width: 5;
+	fill: none;
+}
+
+#Prodline:hover{
+	stroke: rgb(163, 44, 196);
+	stroke-width: 8;
+}
+
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    stroke-width: 2;
+    shape-rendering: crispEdges;
+}
+
+.title{
+	fill: black;
+}
+
+.label{
+	fill: black;
+}
+
+.legend{
+	fill:black;
+}
+
+.d3-tip {
+		  line-height: 1;
+		  font-weight: bold;
+		  font-family: sans-serif;
+		  padding: 12px;
+		  background: rgba(173, 53, 212, 0.8);
+		  color: #fff;
+		  border-radius: 2px;
+	}
+	
+	.d3-tip:after {
+		  box-sizing: border-box;
+		  display: inline;
+		  font-size: 10px;
+		  font-family: sans-serif;
+		  width: 100%;
+		  line-height: 1;
+		  color: rgba(173, 53, 212, 0.8);
+		  content: "\25BC";
+		  position: absolute;
+		  text-align: center;
+	}
+	
+	.d3-tip.n:after {
+		  margin: -1px 0 0 0;
+		  top: 100%;
+		  left: 0;
+	}
+	
+	
+	
+	
+</style>
+<body>
+
+<!-- load the d3.js library -->    
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+
+<script>
+
+
+// Set the dimensions of the canvas / graph
+var margin = {top: 50, right: 80, bottom: 80, left: 80},
+    width = 900 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+
+// Get the data
+d3.csv("StudentProd.csv", function(error, data) {
+    data.forEach(function(d) {
+        d.FTE = +d.FTE;
+    });	
+	
+
+// Set the ranges
+var x = d3.scale.linear()
+		.range([0, width]);
+
+	
+var y = d3.scale.linear().range([height, 0]);
+
+var y2 = d3.scale.linear().range([height, 0]);
+
+// Define the axes
+var xAxis = d3.svg.axis().scale(x)
+    .orient("bottom").ticks(5)
+	.tickFormat(d3.format("d")); //makes the years appear without thousand commas
+
+var yAxis = d3.svg.axis().scale(y)
+    .orient("left").ticks(5);
+	
+var yAxis2 = d3.svg.axis().scale(y2)
+		.orient("right").ticks(5);
+
+// Define the line
+var valuelineFTE = d3.svg.line()
+    .x(function(d) { return x(d.year); })
+    .y(function(d) { return y(d.FTE); });
+	
+var valuelineProd = d3.svg.line()
+		.x(function(d) { return x(d.year); })
+		.y(function(d) { return y2(d.productivity); });
+    
+// Adds the svg canvas
+var svg = d3.select("body")
+    .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+        .attr("transform", 
+              "translate(" + margin.left + "," + margin.top + ")");
+
+/*var tip = d3.tip()
+				  .attr('class', 'd3-tip')
+				  .offset([-10, 0])
+				  .html(function(d) {
+					return  (d.FTE) ;
+				  })	
+	
+		svg.call(tip);		*/	  
+
+
+    // Scale the data
+    x.domain(d3.extent(data, function(d) { return d.year; }));
+    y.domain([0, d3.max(data, function(d) { return d.FTE; })]);
+	y2.domain([0, d3.max(data, function(d) { return d.productivity; })]);
+
+    
+		
+    // Add the X Axis
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+	/*	.append("text")
+			.attr("class", "label")
+			.attr("x", width/2)
+			.attr("y", margin.bottom/2 + 18)
+			.style("text-anchor", "middle")
+			.style("font-family", "sans-serif")
+			.style("font-size", "14px")
+			.text("Year"); */
+
+    // Add the Y Axis
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+		.append("text")
+			.attr("class", "label")
+			.attr("transform", "rotate(-90)")
+			.attr("y", 0-margin.left-20)
+			.attr("x", 0-height/2)
+			.attr("dy", "3em")
+			.style("text-anchor", "middle")
+			.style("font-family", "sans-serif")
+			.style("font-size", "14px")
+			.text("Researcher FTE");
+
+	svg.append("g")
+		.attr("class", "y2 axis")
+		.call(yAxis2)
+		.attr("transform", "translate(" + width + ",0)")
+		.append("text")
+			.attr("class", "label")
+			.attr("transform", "rotate(-90)")
+			.attr("y",50)
+			.attr("x",0-height/2) //where is it??
+			.style("text-anchor", "middle")
+			.style("font-family", "sans-serif")
+			.style("font-size", "14px")
+			.text("Papers per FTE");
+			
+	// Add the valuelineFTE path.
+    
+	svg.append("path")
+		.attr("id", "Prodline")
+		.attr("d", valuelineProd(data));
+	
+	
+	svg.append("path")
+        .attr("id", "FTEline")
+        .attr("d", valuelineFTE(data));
+	//	.on('mouseover', tip.show)
+	//	.on('mouseout', tip.hide);
+
+			
+		
+		
+	svg.append("text")
+		.attr("class", "title")
+		.attr()
+		
+	svg.append("g")
+			.append("text")
+			.attr("class", "title")
+			.attr("y", margin.top/5-20)
+			.attr("x", width/2)
+			.attr("font-family", "sans-serif")
+			.attr("font-size", "20")
+			.style("font-weight", "bold")
+			.style("text-anchor", "middle")
+			.style("text-align", "center")
+			.text("NZ Govt and Higher Education Researcher FTE and Productivity (Stats NZ)");	
+			
+			
+		/* Legend start */	
+			svg.append("circle") //There must be a neater way of making a legend
+					.attr("class", "circle")
+					.attr("cx", 0)
+					.attr("cy", height+margin.bottom/2)
+					.attr("r", 7)
+					.style("fill", "rgb(136,173,8)");
+					
+			svg.append("text")
+					.attr("class", "legend")
+					.attr("text-anchor", "start")
+					.attr("x", 10)
+					.attr("y", height+margin.bottom/2+4)
+					.style("font-family", "sans-serif")
+					.style("font-size", "12")
+					.text("= Researcher FTE");
+
+					
+			svg.append("circle")
+					.attr("class", "circle")
+					.attr("cx", 0)
+					.attr("cy", height+margin.bottom/2+20)
+					.attr("r", 7)
+					.style("fill", "rgb(113, 1, 147)")
+					.append("text")
+					.attr("class", "legend")
+					.text("= Papers per FTE");
+					
+			svg.append("text")
+					.attr("class", "legend")
+					.attr("text-anchor", "start")
+					.attr("x", 10)
+					.attr("y", height+margin.bottom/2+24)
+					.style("font-family", "sans-serif")
+					.style("font-size", "12")
+					.text("= Papers per FTE");		
+
+		/* Legend end */
+
+
+	
+		
+});
+
+</script>
+</body>
