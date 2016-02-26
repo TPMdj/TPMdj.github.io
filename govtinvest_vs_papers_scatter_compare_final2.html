@@ -74,11 +74,11 @@
 	<div style="float: left">
 	<script> 
 	
-		var w = 900;
-		var h = 550;
-		var padding1 = 80;
-		var padding2 = 60;
-		var padding3 = 20;
+		var w = 820; //900 or 633 or 820
+		var h = 501; //550 or 395 or 501
+		var padding1 = 70; //reduced by 10
+		var padding2 = 50;
+		var padding3 = 10;
 	
 
 		var dataset = [ 
@@ -181,10 +181,10 @@
 					.attr("x", w/2)
 					.attr("y", 50)
 					.attr("text-anchor", "middle")
-					.style("font-size", "20px")
+					.style("font-size", "18px")
 					.style("font-family", "sans-serif")
 					.style("font-weight", "bold")
-					.text("NZ Govt. Expenditure on Science & Innovation vs Bibliometric Output Two Years Later");
+					.text("NZ Govt. Expenditure on S&I vs Bibliometric Output Two Years Later");
 					
 		var trendline = canvas.append("line")
 							.attr("x1", (8643))
