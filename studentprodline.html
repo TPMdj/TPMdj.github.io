@@ -96,7 +96,7 @@ var margin = {top: 50, right: 80, bottom: 80, left: 80},
 
 
 // Get the data
-d3.csv("http://tpm.wordpress.fos.auckland.ac.nz/files/2016/02/StudentProd.csv", function(error, data) {
+d3.csv("StudentProd.csv", function(error, data) {
     data.forEach(function(d) {
         d.FTE = +d.FTE;
     });	
